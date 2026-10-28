@@ -27,8 +27,8 @@ pip install -r requirements.txt
 ```
 
 ## Como executar
-iniciar.bat       atalho de execução no Windows
-iniciar.sh        atalho de execução no Mac/Linux
+- iniciar.bat       atalho de execução no Windows
+- iniciar.sh        atalho de execução no Mac/Linux
 
 O navegador abre sozinho em `http://127.0.0.1:8765`. No Windows também é possível dar dois cliques em `iniciar.bat` (ele procura o Anaconda automaticamente); no Mac/Linux, use `./iniciar.sh`.
 
