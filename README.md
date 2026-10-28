@@ -1,6 +1,6 @@
-# Baixador de XML de NF-e
+# Baixador de XML de NF-e - Python
 
-Aplicação web **local** que baixa os XMLs de notas fiscais eletrônicas (NF-e) a partir das chaves de acesso de uma planilha e, opcionalmente, importa esses XMLs no sistema SISGI. Roda no seu computador e é usada pelo navegador.
+Aplicação web **local** que baixa os XMLs de notas fiscais eletrônicas (NF-e) a partir das chaves de acesso de uma planilha. Roda no seu computador e é usada pelo navegador.
 
 ## Como funciona
 
@@ -13,13 +13,6 @@ O programa sobe um servidor local (Flask) em `http://127.0.0.1:8765` e abre uma 
 3. Para cada chave, o Chrome cola a chave no site, clica em **Imprimir DANFE** e depois em **Baixar XML**. O arquivo é salvo como `<chave>.xml`.
 4. Chaves inválidas são puladas e chaves já baixadas não são baixadas de novo. Basta rodar o mesmo intervalo outra vez para refazer só as que falharam.
 5. Há pausas aleatórias entre as notas (e uma pausa maior a cada lote) para reduzir o risco de bloqueio. Se o site exibir a verificação anti-robô, você a resolve na própria janela e o programa continua.
-
-**Etapa 2 — Importar no SISGI**
-
-1. O programa lê a data de emissão de cada XML e agrupa os arquivos por mês, porque o SISGI só aceita notas do mês de competência informado.
-2. O Chrome abre no SISGI e você faz o login manualmente. Quando a lista de despesas aparece, o envio continua sozinho.
-3. Os arquivos são enviados em lotes de até 20 pelo botão **Importar XML**, e as respostas do sistema aparecem no log.
-4. O que já foi enviado é registrado em `sisgi_importados.txt`, dentro da pasta dos XMLs, e não é reenviado.
 
 A tela mostra o andamento em tempo real (barra, contadores, log e lista de falhas), tem botão **Parar** e um modo **Apenas simular**, que mostra o plano sem abrir o Chrome nem baixar ou enviar nada.
 
@@ -34,10 +27,8 @@ pip install -r requirements.txt
 ```
 
 ## Como executar
-
-```bash
-python app.py
-```
+iniciar.bat       atalho de execução no Windows
+iniciar.sh        atalho de execução no Mac/Linux
 
 O navegador abre sozinho em `http://127.0.0.1:8765`. No Windows também é possível dar dois cliques em `iniciar.bat` (ele procura o Anaconda automaticamente); no Mac/Linux, use `./iniciar.sh`.
 
@@ -50,16 +41,6 @@ requirements.txt  dependências
 iniciar.bat       atalho de execução no Windows
 iniciar.sh        atalho de execução no Mac/Linux
 ```
-
-## Configuração
-
-Variáveis de ambiente opcionais:
-
-| Variável | Uso | Padrão |
-|---|---|---|
-| `NFE_PORT` | porta do servidor local | `8765` |
-| `NFE_SISGI_URL` | endereço da lista de despesas do SISGI | definido no `app.py` |
-| `NFE_NO_BROWSER` | `1` para não abrir o navegador ao iniciar | — |
 
 ## Observações
 
