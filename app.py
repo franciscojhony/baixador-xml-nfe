@@ -36,7 +36,16 @@ except ImportError as _e:
 
 BASE = Path(__file__).resolve().parent
 SITE_URL = os.environ.get("NFE_SITE_URL", "https://consultadanfe.com/")
-HOST = "127.0.0.1"  # somente este computador consegue acessar
+
+
+# ----------------------------------------------------------------------------
+# ACESSO PELA REDE  ← É AQUI QUE SE LIGA E DESLIGA
+#   True  = outros computadores da mesma rede também acessam (http://IP-DO-PC:8765)
+#   False = somente este computador acessa (http://127.0.0.1:8765)  ← uso local, mais seguro
+# ----------------------------------------------------------------------------
+ACESSO_PELA_REDE = True
+# "0.0.0.0" = escuta em todas as placas de rede; "127.0.0.1" = só o próprio computador.
+HOST = "0.0.0.0" if ACESSO_PELA_REDE else "127.0.0.1"
 PORT = int(os.environ.get("NFE_PORT", "8765"))
 
 XP_BUSCAR = "//button[normalize-space(.)='Imprimir DANFE']"
@@ -567,11 +576,32 @@ def index():
     return send_from_directory(app.static_folder, "index.html")
 
 
+
+
+def meus_ips():
+    """Descobre o IP deste computador na rede (para mostrar na janela preta)."""
+    import socket
+    ips = set()
+    try:
+        for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
+            if not info[4][0].startswith("127."):
+                ips.add(info[4][0])
+    except OSError:
+        pass
+    return sorted(ips)
+
+
 def main():
-    url = f"http://{HOST}:{PORT}/"
+    # O navegador DESTE computador sempre abre em 127.0.0.1.
+    # (Não use HOST aqui: "0.0.0.0" serve para escutar, não para ser aberto no navegador.)
+    url = f"http://127.0.0.1:{PORT}/"
     print("=" * 60)
     print(" Baixador de XML de NF-e")
-    print(f" Abra no navegador: {url}")
+    print(f" Neste computador:  {url}")
+    if ACESSO_PELA_REDE:  # ← mostra o endereço para os outros computadores
+        for ip in meus_ips():
+            print(f" Outros computadores: http://{ip}:{PORT}/")
+        print(" ATENÇÃO: sem senha. Use só em rede confiável.")
     print(" Para encerrar: feche esta janela (ou use o botão 'Encerrar' na página).")
     print("=" * 60)
     if os.environ.get("NFE_NO_BROWSER") != "1":
